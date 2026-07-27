@@ -1,0 +1,5 @@
+.env
+node_modules/
+frontend/src/assets/
+.DS_Store
+dist/
