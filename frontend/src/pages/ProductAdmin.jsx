@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import Loading from "../components/Loading";
 import ProductCartAdmin from "../components/ProductCartAdmin";
 import { IoSearchSharp } from "react-icons/io5";
-import EditProductAdmin from "../components/EditProductAdmin";
+// import EditProductAdmin from "../components/EditProductAdmin";
 
 
 const ProductAdmin = () => {
@@ -99,7 +99,8 @@ const ProductAdmin = () => {
         <div className="min-h-[55vh]">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 ">
             {productData.map((p, index) => {
-              return <ProductCartAdmin key={"item"+index} data={p} />;
+              return(
+                 <ProductCartAdmin key={"item"+index} data={p} fetchProductData={fetchProductData}/>)
             })}
           </div>
         </div>
@@ -122,7 +123,7 @@ const ProductAdmin = () => {
           </button>
         </div>
       </div>
-      <EditProductAdmin/>
+      {/* <EditProductAdmin/> */}
     </section>
   );
 };
