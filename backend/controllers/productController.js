@@ -84,7 +84,7 @@ export const getProductController = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const [data, totalCount] = await Promise.all([
-      ProductModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      ProductModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).populate(['category', 'subCategory']),
       ProductModel.countDocuments(query),
     ]);
    
@@ -210,6 +210,40 @@ export const getProductDetails = async(req,res) => {
     
   } catch (error) {
      return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+// update product
+export const updateProductDetails = async(req,res) => {
+  try {
+    const { _id } = req.body
+
+    if (!_id) {
+      return res.json({
+        message : "provide product _id",
+        error : true,
+        success : false
+      })
+      
+    }
+
+    const updateProduct = await ProductModel.updateOne({ _id : _id },{
+      ...req.body
+    })
+
+    return res.json({
+      message : "updated Successfully",
+      data : updateProduct,
+      error : false,
+      success : true
+    })
+    
+  } catch (error) {
+    return res.status(500).json({
       message: error.message || error,
       error: true,
       success: false,
