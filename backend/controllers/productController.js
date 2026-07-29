@@ -250,3 +250,33 @@ export const updateProductDetails = async(req,res) => {
     });
   }
 }
+
+// delete product
+export const deleteProductDetails = async (req,res) => {
+  try {
+    const { _id } = req.body
+
+    if (!_id) {
+      return res.status(400).json({
+        message : "Provide _Id",
+        error : true,
+        success : false
+      })
+      
+    }
+    const deleteProduct = await ProductModel.deleteOne({_id : _id})
+
+    return res.json({
+      message : "Deleted Successfully",
+      error : false,
+      success : true,
+      data : deleteProduct
+    })
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
