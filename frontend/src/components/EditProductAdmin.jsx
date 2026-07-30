@@ -12,18 +12,19 @@ import SummaryApi from "../common/SummaryApi";
 import AxiosToastError from "../utils/AxiosToastError";
 import successAlert from "../utils/SuccessAlert";
 
-const EditProductAdmin = ({close}) => {
+const EditProductAdmin = ({close, data : propsData, fetchProductData}) => {
   const [data, setData] = useState({
-    name: "",
-    image: [],
-    category: [],
-    subCategory: [],
-    unit: "",
-    stock: "",
-    price: "",
-    discount: "",
-    description: "",
-    more_details: {},
+    _id : propsData._id,
+    name: propsData.name,
+    image: propsData.image,
+    category: propsData.category,
+    subCategory: propsData.subCategory,
+    unit: propsData.unit,
+    stock: propsData.stock,
+    price: propsData.price,
+    discount: propsData.discount,
+    description: propsData.description,
+    more_details: propsData.more_details || {},
   });
   const [imageLoading, setImageLoading] = useState(false);
   const [viewImageUrl, setViewImageUrl] = useState("");
@@ -110,13 +111,18 @@ const EditProductAdmin = ({close}) => {
     console.log("data", data);
     try {
       const response = await Axios({
-        ...SummaryApi.createProduct,
+        ...SummaryApi.updateProductDetails,
         data: data,
       });
       const { data: responseData } = response;
 
       if (responseData.success) {
         successAlert(responseData.message);
+        if (close) {
+          close()
+          
+        }
+        fetchProductData()
         setData({
           name: "",
           image: [],
@@ -135,6 +141,7 @@ const EditProductAdmin = ({close}) => {
     }
   };
 
+  
   return (
     <section className="fixed top-0 right-0 left-0 bottom-0 bg-black/50 z-50">
       <div className="bg-white w-full p-4 max-w-2xl mx-auto rounded overflow-y-auto h-full max-h-[95vh]">
@@ -438,7 +445,7 @@ const EditProductAdmin = ({close}) => {
               </div>
 
               <button className="bg-yellow-400 hover:bg-yellow-300 border border-yellow-400 py-2 font-semibold text-center px-3 cursor-pointer hover:text-neutral-900 rounded">
-                Submit
+               Update Product
               </button>
             </form>
           </div>
