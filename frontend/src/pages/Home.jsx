@@ -59,7 +59,7 @@ const Home = () => {
           : categoryData.map((cat, index) => {
               return (
                 <div
-                  key={cat._id + "displayCategory"}
+                  key={cat._id + "displayCategory"+index}
                   className="w-full h-full"
                   onClick={() => handleRedirectProductList(cat._id, cat.name)}
                 >
@@ -79,9 +79,9 @@ const Home = () => {
       {categoryData.map((c, index) => {
         return (
           <CategoryWiseProductDisplay
-            key={c?._id + "categorywiseProduct"}
-            id={c._id}
-            name={c.name}
+            key={c?._id + "categorywiseProduct"+index}
+            id={c?._id}
+            name={c?.name}
           />
         );
       })}
