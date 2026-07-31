@@ -114,7 +114,26 @@ const ProductDisplayPage = () => {
             </button>
           </div>
         </div>
-        <div></div>
+
+        <div className="my-4 grid gap-3">
+          <div>
+            <p className="font-semibold">Description</p>
+            <p className="text-base ">{data.description}</p>
+          </div>
+          <div>
+            <p className="font-semibold">Unit</p>
+            <p className="text-base ">{data.unit}</p>
+          </div>
+          {data?.more_details &&
+            Object.keys(data?.more_details).map((element, index) => {
+              return (
+                <div key={index+"more_details"}>
+                  <p className="font-semibold">{element}</p>
+                  <p className="text-base ">{data?.more_details[element]}</p>
+                </div>
+              );
+            })}
+        </div>
       </div>
 
       <div className="p-4 lg:pl-7 text-base lg:text-lg">
@@ -132,11 +151,9 @@ const ProductDisplayPage = () => {
                 )}
               </p>
             </div>
-            {
-              data.discount && (
-                <p className="line-through">{DisplayPriceInRupees(data.price)}</p>
-              )
-            }
+            {data.discount && (
+              <p className="line-through">{DisplayPriceInRupees(data.price)}</p>
+            )}
             {data.discount && (
               <p className="font-bold text-green-600 lg:text-2xl ">
                 {data.discount}%{" "}
