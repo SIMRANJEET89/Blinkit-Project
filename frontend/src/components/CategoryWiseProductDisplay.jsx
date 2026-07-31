@@ -8,11 +8,17 @@ import CartLoading from "./CartLoading";
 import CartProduct from "./CartProduct";
 import { FaAngleLeft } from "react-icons/fa6";
 import { FaAngleRight } from "react-icons/fa6";
+import { useSelector } from "react-redux";
+import { validURLConvert } from "../utils/ValidUrlConvert";
 
 const CategoryWiseProductDisplay = ({ id, name }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef();
+  const subCategoryData = useSelector((state) => state.product.allSubCategory);
+  const loadingCardNumber = new Array(6).fill(null);
+
+ 
 
   const fetchCategoryWiseProduct = async () => {
     try {
@@ -47,13 +53,29 @@ const CategoryWiseProductDisplay = ({ id, name }) => {
   const handleScrollLeft = () => {
     containerRef.current.scrollLeft -= 200;
   };
-  const loadingCardNumber = new Array(6).fill(null);
+  
 
+  const handleRedirectProductList = () => {
+    console.log(id,name);
+    
+    const subcategory = subCategoryData.find((sub) => {
+      const filterData = sub.category.some((c) => {
+        return c._id == id;
+      });
+      return filterData ? true : null;
+    });
+    
+    const url = `/${validURLConvert(name)}-${id}/${validURLConvert(subcategory.name)}-${subcategory._id}`;
+
+    return url
+  };
+  const redirectURL = handleRedirectProductList()
+  
   return (
     <div>
       <div className="container mx-auto p-4 flex items-center justify-between gap-4">
         <h1 className="font-semibold text-lg md:text-xl ">{name}</h1>
-        <Link to="" className="text-green-600 hover:text-green-400">
+        <Link to={redirectURL} className="text-green-600 hover:text-green-400">
           See All
         </Link>
       </div>
