@@ -12,11 +12,11 @@ import UserMenu from "./UserMenu";
 const Header = () => {
   const [isMobile] = useMobile();
   const location = useLocation();
+  const isSearchPage = location.pathname === "/search";
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const [openUserMenu, setOpenUserMenu] = useState(false);
-
-  const isSearchPage = location.pathname === "/search";
+  
 
   const redirectToLoginPage = () => {
     navigate("/login");
