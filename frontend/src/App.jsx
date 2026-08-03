@@ -7,9 +7,14 @@ import { useEffect } from "react";
 import fetchUserDetails from "./utils/fetchUserDetails.js";
 import { setUserDetails } from "./store/userSlice.js";
 import { useDispatch } from "react-redux";
-import { setAllCategory, setAllSubCategory, setLoadingCategory } from "./store/productSlice.js";
+import {
+  setAllCategory,
+  setAllSubCategory,
+  setLoadingCategory,
+} from "./store/productSlice.js";
 import SummaryApi from "./common/SummaryApi.js";
 import Axios from "./utils/Axios.js";
+import { handleAddItemCart } from "./store/cartProduct.js";
 
 function App() {
   const dispatch = useDispatch();
@@ -17,52 +22,65 @@ function App() {
   const fetchUser = async () => {
     const userData = await fetchUserDetails();
     dispatch(setUserDetails(userData.data));
-    
   };
 
   const fetchCategory = async () => {
     try {
-      dispatch(setLoadingCategory(true))
+      dispatch(setLoadingCategory(true));
       const response = await Axios({
         ...SummaryApi.getCategory,
-      })
+      });
       const { data: responseData } = response;
 
       if (responseData.success) {
-        dispatch(setAllCategory(responseData.data))
-      
+        dispatch(setAllCategory(responseData.data));
       }
     } catch (error) {
       console.log(error);
-    }finally{
-      dispatch(setLoadingCategory(false))
+    } finally {
+      dispatch(setLoadingCategory(false));
     }
-  }
+  };
 
-   const fetchSubCategory = async () => {
+  const fetchSubCategory = async () => {
     try {
-
       const response = await Axios({
         ...SummaryApi.getSubCategory,
-      })
+      });
       const { data: responseData } = response;
 
       if (responseData.success) {
-        dispatch(setAllSubCategory(responseData.data))
-      
+        dispatch(setAllSubCategory(responseData.data));
       }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
+
+  const fetchCartItem = async () => {
+    try {
+      const response = await Axios({
+        ...SummaryApi.getCartItem,
+      });
+
+      const { data: responseData } = response;
+
+      if (responseData.success) {
+        dispatch(handleAddItemCart(responseData.data))
+        console.log(responseData);
+        
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    fetchUser()
-    fetchCategory()
-    fetchSubCategory()
-  }, [])
-
-
+    fetchUser();
+    fetchCategory();
+    fetchSubCategory();
+    fetchCartItem();
+  }, []);
 
   return (
     <>
