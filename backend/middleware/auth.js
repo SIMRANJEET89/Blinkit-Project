@@ -34,7 +34,7 @@ const auth = async (req, res, next) => {
   } catch (error) {
     console.log("AUTH ERROR:", error);
     return res.status(500).json({
-      message: error.message || error,
+      message: "You have not Login",
       error: true,
       success: false,
     });
