@@ -14,7 +14,7 @@ import {
 } from "./store/productSlice.js";
 import SummaryApi from "./common/SummaryApi.js";
 import Axios from "./utils/Axios.js";
-import { handleAddItemCart } from "./store/cartProduct.js";
+import GlobalProvider from './Provider/GlobalProvider.jsx'
 
 function App() {
   const dispatch = useDispatch();
@@ -57,40 +57,24 @@ function App() {
     }
   };
 
-  const fetchCartItem = async () => {
-    try {
-      const response = await Axios({
-        ...SummaryApi.getCartItem,
-      });
-
-      const { data: responseData } = response;
-
-      if (responseData.success) {
-        dispatch(handleAddItemCart(responseData.data))
-        console.log(responseData);
-        
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  
 
   useEffect(() => {
     fetchUser();
     fetchCategory();
     fetchSubCategory();
-    fetchCartItem();
+    
   }, []);
 
   return (
-    <>
+    <GlobalProvider>
       <Header />
       <main className="min-h-[78vh]">
         <Outlet />
       </main>
       <Footer />
       <Toaster />
-    </>
+    </GlobalProvider>
   );
 }
 
