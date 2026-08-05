@@ -41,8 +41,15 @@ const Header = () => {
   useEffect(() => {
     const qty = cartItem.reduce((prev, curr) => {
       return prev + curr.quantity;
-    }, 0);
-    setTotalQty(qty)
+    }, 0)
+
+    setTotalQty(qty);
+
+    const tPrice = cartItem.reduce((prev,curr) => {
+      return prev + (curr.productId.price * curr.quantity)
+    },0)
+    setTotalPrice(tPrice);
+    
     
   }, [cartItem]);
 
