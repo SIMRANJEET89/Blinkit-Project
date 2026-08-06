@@ -94,7 +94,8 @@ export const updateCartItemQtyController = async (req,res) => {
             
         }
         const updateCartItem = await CartProductModel.updateOne({
-            _id : _id
+            _id : _id,
+            userId : userId
         }, {
             quantity : qty
         })
@@ -104,6 +105,37 @@ export const updateCartItemQtyController = async (req,res) => {
             success : true,
             error : false,
             data : updateCartItem
+        })
+        
+    } catch (error) {
+        return res.status(500).json({
+            message : error.message || error,
+            error : true,
+            success : false
+        })
+    }
+}
+
+export const deleteCartItemQtyController = async (req,res) => {
+    try {
+        const userId = req.userId // middleware
+        const { _id } = req.body
+
+        if (!_id) {
+            return res.status(400).json({
+                message : "Provide _id",
+                error : true,
+                success : false
+            })  
+        }
+
+        const deleteCartItem = await CartProductModel.deleteOne({_id : _id, userId : userId})
+
+        return res.json({
+            message : "Item remove",
+            error : false,
+            success : true,
+            data : deleteCartItem
         })
         
     } catch (error) {
