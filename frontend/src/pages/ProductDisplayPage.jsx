@@ -11,6 +11,7 @@ import image1 from "../assets/minute_delivery.png";
 import image2 from "../assets/Best_Prices_Offers.png";
 import image3 from "../assets/Wide_Assortment.png";
 import { priceWithDiscount } from "../utils/PriceWithDiscount";
+import AddToCartBtn from "../components/AddToCartBtn";
 
 const ProductDisplayPage = () => {
   const params = useParams();
@@ -167,9 +168,13 @@ const ProductDisplayPage = () => {
         {data.stock === 0 ? (
           <p className="text-lg text-red-500 my-2">Out of stock</p>
         ) : (
-          <button className="border-green-700 bg-green-600 hover:bg-green-700 text-white px-3 py-1 m-2 rounded">
-            Add
-          </button>
+          // <button className="border-green-700 bg-green-600 hover:bg-green-700 text-white px-3 py-1 m-2 rounded">
+          //   Add
+          // </button>
+          <div className="my-4">
+          <AddToCartBtn data={data}/>
+          </div>
+         
         )}
 
         <h2 className="font-bold">Why shop from blinkit ?</h2>
