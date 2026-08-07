@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import fetchUserDetails from "./utils/fetchUserDetails.js";
 import { setUserDetails } from "./store/userSlice.js";
 import { useDispatch } from "react-redux";
+import GlobalProvider from "./Provider/GlobalProvider.jsx";
 import {
   setAllCategory,
   setAllSubCategory,
@@ -14,10 +15,11 @@ import {
 } from "./store/productSlice.js";
 import SummaryApi from "./common/SummaryApi.js";
 import Axios from "./utils/Axios.js";
-import GlobalProvider from './Provider/GlobalProvider.jsx'
+import CartMobileLink from "./components/CartMobileLink.jsx";
 
 function App() {
   const dispatch = useDispatch();
+
 
   const fetchUser = async () => {
     const userData = await fetchUserDetails();
@@ -57,13 +59,10 @@ function App() {
     }
   };
 
-  
-
   useEffect(() => {
     fetchUser();
     fetchCategory();
     fetchSubCategory();
-    
   }, []);
 
   return (
@@ -74,6 +73,9 @@ function App() {
       </main>
       <Footer />
       <Toaster />
+      <div className="sticky bottom-4 p-2">
+       <CartMobileLink/>
+      </div>
     </GlobalProvider>
   );
 }
