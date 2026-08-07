@@ -21,7 +21,7 @@ const ProductDisplayPage = () => {
     image: [],
   });
   const [image, setImage] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading,setLoading] = useState(false);
   const imageContainer = useRef();
 
   const fetchProductDetails = async () => {
@@ -116,7 +116,7 @@ const ProductDisplayPage = () => {
           </div>
         </div>
 
-        <div className="my-4 grid gap-3">
+        <div className="my-4 hidden lg:grid gap-3  ">
           <div>
             <p className="font-semibold">Description</p>
             <p className="text-base ">{data.description}</p>
@@ -209,6 +209,28 @@ const ProductDisplayPage = () => {
               </p>
             </div>
           </div>
+        </div>
+
+
+        {/* only mobile */}
+        <div className="my-4 grid gap-3  ">
+          <div>
+            <p className="font-semibold">Description</p>
+            <p className="text-base ">{data.description}</p>
+          </div>
+          <div>
+            <p className="font-semibold">Unit</p>
+            <p className="text-base ">{data.unit}</p>
+          </div>
+          {data?.more_details &&
+            Object.keys(data?.more_details).map((element, index) => {
+              return (
+                <div key={index+"more_details"}>
+                  <p className="font-semibold">{element}</p>
+                  <p className="text-base ">{data?.more_details[element]}</p>
+                </div>
+              );
+            })}
         </div>
       </div>
     </section>
