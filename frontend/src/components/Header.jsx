@@ -10,6 +10,7 @@ import { useState } from "react";
 import UserMenu from "./UserMenu";
 import { useEffect } from "react";
 import { DisplayPriceInRupees } from "../utils/DisplayPriceInRupees";
+import { useGlobalContext } from "../Provider/GlobalProvider";
 
 const Header = () => {
   const [isMobile] = useMobile();
@@ -19,8 +20,9 @@ const Header = () => {
   const user = useSelector((state) => state.user);
   const [openUserMenu, setOpenUserMenu] = useState(false);
   const cartItem = useSelector((state) => state.cartItem.cart);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [totalQty, setTotalQty] = useState(0);
+  // const [totalPrice, setTotalPrice] = useState(0);
+  // const [totalQty, setTotalQty] = useState(0);
+  const {totalPrice, totalQty} = useGlobalContext()
 
   const redirectToLoginPage = () => {
     navigate("/login");
@@ -38,20 +40,20 @@ const Header = () => {
 
   //total items and total price
 
-  useEffect(() => {
-    const qty = cartItem.reduce((prev, curr) => {
-      return prev + curr.quantity;
-    }, 0)
+  // useEffect(() => {
+  //   const qty = cartItem.reduce((prev, curr) => {
+  //     return prev + curr.quantity;
+  //   }, 0)
 
-    setTotalQty(qty);
+  //   setTotalQty(qty);
 
-    const tPrice = cartItem.reduce((prev,curr) => {
-      return prev + (curr.productId.price * curr.quantity)
-    },0)
-    setTotalPrice(tPrice);
+  //   const tPrice = cartItem.reduce((prev,curr) => {
+  //     return prev + (curr.productId.price * curr.quantity)
+  //   },0)
+  //   setTotalPrice(tPrice);
     
     
-  }, [cartItem]);
+  // }, [cartItem]);
 
   return (
     <header className="h-24 lg:h-20 shadow-md sticky top-0 flex flex-col justify-center gap-1 bg-white z-50">
