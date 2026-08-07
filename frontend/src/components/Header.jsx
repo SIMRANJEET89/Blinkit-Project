@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { GoTriangleDown, GoTriangleUp } from "react-icons/go";
 import { useState } from "react";
 import UserMenu from "./UserMenu";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { DisplayPriceInRupees } from "../utils/DisplayPriceInRupees";
 import { useGlobalContext } from "../Provider/GlobalProvider";
 
