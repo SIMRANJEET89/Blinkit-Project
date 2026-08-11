@@ -73,9 +73,9 @@ function App() {
       </main>
       <Footer />
       <Toaster />
-      <div className="sticky bottom-4 p-2">
+     
        <CartMobileLink/>
-      </div>
+    
     </GlobalProvider>
   );
 }
