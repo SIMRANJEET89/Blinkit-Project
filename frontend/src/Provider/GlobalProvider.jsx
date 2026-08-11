@@ -15,6 +15,7 @@ export const  useGlobalContext = () => useContext(GlobalContext)
 const GlobalProvider = ({children}) => {
     const dispatch = useDispatch()
     const [totalPrice, setTotalPrice] = useState(0);
+    const [notDiscountTotalPrice, setNotDiscountTotalPrice] = useState(0)
     const [totalQty, setTotalQty] = useState(0);
      const cartItem = useSelector((state) => state.cartItem.cart);
 
@@ -49,12 +50,14 @@ const GlobalProvider = ({children}) => {
       const {data :  responseData} = response
 
       if (responseData.success) {
-        toast.success(responseData.message)
+        // toast.success(responseData.message)
         fetchCartItem()
+        return responseData
       }
       
     } catch (error) {
       AxiosToastError(error)
+      return error
     }
   }
 
@@ -100,7 +103,11 @@ const GlobalProvider = ({children}) => {
       return prev + (priceAfterDiscount * curr.quantity)
     },0)
     setTotalPrice(tPrice);
-    
+
+    const notDiscountTotalPrice = cartItem.reduce((prev,curr) => {    
+      return prev + (curr?.productId?.price* curr.quantity)
+    },0)
+    setNotDiscountTotalPrice(notDiscountTotalPrice)
     
   }, [cartItem]);
 
@@ -109,7 +116,8 @@ const GlobalProvider = ({children}) => {
         fetchCartItem,
         updateCartItem,
         deleteCartItem,
-        totalPrice, totalQty
+        totalPrice, totalQty,
+        notDiscountTotalPrice
      }}>
         {children}
      </GlobalContext.Provider>
