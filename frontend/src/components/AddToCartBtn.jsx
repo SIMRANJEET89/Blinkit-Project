@@ -6,19 +6,15 @@ import toast from "react-hot-toast";
 import AxiosToastError from "../utils/AxiosToastError";
 import Loading from "./Loading";
 import { useSelector } from "react-redux";
-import { FaMinus,  FaPlus  } from "react-icons/fa";
-
-
-
+import { FaMinus, FaPlus } from "react-icons/fa";
 
 const AddToCartBtn = ({ data }) => {
   const { fetchCartItem, updateCartItem, deleteCartItem } = useGlobalContext();
   const [loading, setLoading] = useState(false);
   const cartItem = useSelector((state) => state.cartItem.cart);
   const [isAvailableCart, setIsAvailableCart] = useState(false);
-  const [qty,setQty] = useState(0)
-  const [cartItemDetails, setCartItemDetails] = useState()
-
+  const [qty, setQty] = useState(0);
+  const [cartItemDetails, setCartItemDetails] = useState();
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -56,43 +52,57 @@ const AddToCartBtn = ({ data }) => {
     );
     setIsAvailableCart(checkingItem);
 
-    const product = cartItem.find(item => item.productId._id === data._id)
-    setQty(product?.quantity)
-    setCartItemDetails(product)
-
+    const product = cartItem.find((item) => item.productId._id === data._id);
+    setQty(product?.quantity);
+    setCartItemDetails(product);
   }, [data, cartItem]);
 
-  const increaseQty = (e) => {
-     e.preventDefault()
-     e.stopPropagation()
+  const increaseQty = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-     updateCartItem(cartItemDetails?._id,qty+1)
+    const response = await updateCartItem(cartItemDetails?._id, qty + 1);
 
-  }
+    if (response.success) {
+      toast.success("Item Added");
+    }
+  };
 
-  const decreaseQty = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+  const decreaseQty = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
     if (qty === 1) {
-      deleteCartItem(cartItemDetails?._id)
-      
-    }else{
-       updateCartItem(cartItemDetails?._id,qty-1)
+      deleteCartItem(cartItemDetails?._id);
+    } else {
+      const response = await updateCartItem(cartItemDetails?._id, qty - 1);
 
+      if (response.success) {
+        toast.success("Item Remove");
+      }
     }
-
-    
-  }
+  };
 
   return (
     <div className="w-full max-w-[150px]">
       {isAvailableCart ? (
         <div className="flex w-full h-full">
-          <button onClick={decreaseQty} className="bg-red-600 hover:bg-red-500 text-white flex-1 cursor-pointer w-full p-1 rounded flex items-center justify-center"><FaMinus/></button>
+          <button
+            onClick={decreaseQty}
+            className="bg-red-600 hover:bg-red-500 text-white flex-1 cursor-pointer w-full p-1 rounded flex items-center justify-center"
+          >
+            <FaMinus />
+          </button>
 
-          <p className="flex-1 w-full font-semibold px-1 flex items-center justify-center">{qty}</p>
-          <button onClick={increaseQty} className="bg-green-600 hover:bg-green-700 text-white flex-1 cursor-pointer w-full p-1 rounded flex items-center justify-center"><FaPlus/></button>
+          <p className="flex-1 w-full font-semibold px-1 flex items-center justify-center">
+            {qty}
+          </p>
+          <button
+            onClick={increaseQty}
+            className="bg-green-600 hover:bg-green-700 text-white flex-1 cursor-pointer w-full p-1 rounded flex items-center justify-center"
+          >
+            <FaPlus />
+          </button>
         </div>
       ) : (
         <button
