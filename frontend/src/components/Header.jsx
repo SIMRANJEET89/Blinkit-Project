@@ -8,9 +8,9 @@ import { useSelector } from "react-redux";
 import { GoTriangleDown, GoTriangleUp } from "react-icons/go";
 import { useState } from "react";
 import UserMenu from "./UserMenu";
-// import { useEffect } from "react";
 import { DisplayPriceInRupees } from "../utils/DisplayPriceInRupees";
 import { useGlobalContext } from "../Provider/GlobalProvider";
+import DisplayCartItems from "./DisplayCartItems";
 
 const Header = () => {
   const [isMobile] = useMobile();
@@ -23,6 +23,8 @@ const Header = () => {
   // const [totalPrice, setTotalPrice] = useState(0);
   // const [totalQty, setTotalQty] = useState(0);
   const {totalPrice, totalQty} = useGlobalContext()
+  const [openCartSection,setOpenCartSection] = useState(false)
+
 
   const redirectToLoginPage = () => {
     navigate("/login");
@@ -125,12 +127,12 @@ const Header = () => {
                 </button>
               )}
 
-              <button className="flex items-center gap-2 bg-green-800 hover:bg-green-700 px-2 py-2 rounded text-white">
+              <button onClick={() => setOpenCartSection(true)} className="flex items-center gap-2 bg-green-800 hover:bg-green-700 px-2 py-2 rounded text-white">
                 {/* cart icon */}
                 <div className="animate-bounce">
                   <TiShoppingCart size={28} />
                 </div>
-                <div className="font-semibold">
+                <div className="font-semibold text-sm">
                   {cartItem[0] ? (
                     <div>
                       <p>{totalQty} Item</p>
@@ -149,6 +151,12 @@ const Header = () => {
       <div className="container mx-auto px-2 lg:hidden">
         <Search />
       </div>
+
+      {
+        openCartSection && (
+          <DisplayCartItems close={() => setOpenCartSection(false)}/>
+        )
+      }
     </header>
   );
 };
