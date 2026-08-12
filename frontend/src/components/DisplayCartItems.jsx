@@ -1,5 +1,5 @@
 import { IoClose } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { DisplayPriceInRupees } from "../utils/DisplayPriceInRupees";
 import { useGlobalContext } from "../Provider/GlobalProvider";
 import { GoTriangleRight } from "react-icons/go";
@@ -7,11 +7,25 @@ import { useSelector } from "react-redux";
 import AddToCartBtn from "./AddToCartBtn";
 import { priceWithDiscount } from "../utils/PriceWithDiscount";
 import emptyCartImg from "../assets/empty_cart.webp";
+import toast from "react-hot-toast";
 
 const DisplayCartItems = ({ close }) => {
   const { notDiscountTotalPrice, totalPrice, totalQty } = useGlobalContext();
   const cartItem = useSelector((state) => state.cartItem.cart);
+  const user = useSelector(state => state.user)
+  const navigate = useNavigate()
 
+  const redirectToCheckoutPage = () => {
+     if (user?._id) {
+       navigate("/checkout")
+       if (close) {
+        close()
+       }
+       return
+     }
+     toast.error("Please Login")
+  }
+  
   return (
     <section className="bg-neutral-900/70 fixed top-0 bottom-0 right-0 left-0 z-50">
       <div className="bg-white w-full max-w-sm min-h-screen max-h-screen ml-auto">
@@ -118,7 +132,8 @@ const DisplayCartItems = ({ close }) => {
           <div className="p-2">
             <div className="bg-green-700 text-neutral-100 px-x font-bold text-base py-4 sticky bottom-3 rounded flex items-center gap-4 justify-between">
               <div>{DisplayPriceInRupees(totalPrice)}</div>
-              <button className="flex items-center gap-1 cursor-pointer">
+
+              <button onClick={redirectToCheckoutPage} className="flex items-center gap-1 cursor-pointer">
                 Proceed
                 <span>
                   <GoTriangleRight size={20} />
