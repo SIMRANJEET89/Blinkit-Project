@@ -12,7 +12,7 @@ const auth = async (req, res, next) => {
 
     if (!token) {
       return res.status(401).json({
-        message: "Provide Token",
+        message: "Login First",
       });
     }
 
