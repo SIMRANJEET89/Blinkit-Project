@@ -7,7 +7,6 @@ import AxiosToastError from "../utils/AxiosToastError";
 import toast from "react-hot-toast";
 import { priceWithDiscount } from "../utils/PriceWithDiscount";
 
-
 export const GlobalContext = createContext(null)
 
 export const  useGlobalContext = () => useContext(GlobalContext)
@@ -17,7 +16,8 @@ const GlobalProvider = ({children}) => {
     const [totalPrice, setTotalPrice] = useState(0);
     const [notDiscountTotalPrice, setNotDiscountTotalPrice] = useState(0)
     const [totalQty, setTotalQty] = useState(0);
-     const cartItem = useSelector((state) => state.cartItem.cart);
+     const cartItem = useSelector(state => state.cartItem.cart);
+     const user = useSelector(state => state?.user)
 
     const fetchCartItem = async () => {
     try {
@@ -82,12 +82,6 @@ const GlobalProvider = ({children}) => {
     }
     
   }
-   
-  useEffect(() => {
-    fetchCartItem()
-
-  },[])
-
 
    useEffect(() => {
     const qty = cartItem.reduce((prev, curr) => {
@@ -111,13 +105,30 @@ const GlobalProvider = ({children}) => {
     
   }, [cartItem]);
 
+  
+
+  useEffect(() => {
+    if (user?._id) {
+       fetchCartItem()
+    }else{
+       dispatch(handleAddItemCart([]))
+    }
+  },[user])
+
+const handleLogOut = () => {
+    localStorage.clear()
+     dispatch(handleAddItemCart([]))
+  }
+
+
     return(
      <GlobalContext.Provider value={{
         fetchCartItem,
         updateCartItem,
         deleteCartItem,
         totalPrice, totalQty,
-        notDiscountTotalPrice
+        notDiscountTotalPrice,
+        handleLogOut
      }}>
         {children}
      </GlobalContext.Provider>
