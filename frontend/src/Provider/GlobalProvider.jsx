@@ -6,20 +6,21 @@ import { handleAddItemCart } from "../store/cartProduct";
 import AxiosToastError from "../utils/AxiosToastError";
 import toast from "react-hot-toast";
 import { priceWithDiscount } from "../utils/PriceWithDiscount";
+import { handleAddAddress } from "../store/addressSlice";
 
-export const GlobalContext = createContext(null)
+export const GlobalContext = createContext(null);
 
-export const  useGlobalContext = () => useContext(GlobalContext)
+export const useGlobalContext = () => useContext(GlobalContext);
 
-const GlobalProvider = ({children}) => {
-    const dispatch = useDispatch()
-    const [totalPrice, setTotalPrice] = useState(0);
-    const [notDiscountTotalPrice, setNotDiscountTotalPrice] = useState(0)
-    const [totalQty, setTotalQty] = useState(0);
-     const cartItem = useSelector(state => state.cartItem.cart);
-     const user = useSelector(state => state?.user)
+const GlobalProvider = ({ children }) => {
+  const dispatch = useDispatch();
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [notDiscountTotalPrice, setNotDiscountTotalPrice] = useState(0);
+  const [totalQty, setTotalQty] = useState(0);
+  const cartItem = useSelector((state) => state.cartItem.cart);
+  const user = useSelector((state) => state?.user);
 
-    const fetchCartItem = async () => {
+  const fetchCartItem = async () => {
     try {
       const response = await Axios({
         ...SummaryApi.getCartItem,
@@ -28,9 +29,8 @@ const GlobalProvider = ({children}) => {
       const { data: responseData } = response;
 
       if (responseData.success) {
-        dispatch(handleAddItemCart(responseData.data))
+        dispatch(handleAddItemCart(responseData.data));
         console.log(responseData);
-        
       }
     } catch (error) {
       console.log(error);
@@ -41,99 +41,114 @@ const GlobalProvider = ({children}) => {
     try {
       const response = await Axios({
         ...SummaryApi.updateCartItemQty,
-        data : {
-          _id : id,
-          qty : qty,
-        }
-      })
+        data: {
+          _id: id,
+          qty: qty,
+        },
+      });
 
-      const {data :  responseData} = response
+      const { data: responseData } = response;
 
       if (responseData.success) {
         // toast.success(responseData.message)
-        fetchCartItem()
-        return responseData
+        fetchCartItem();
+        return responseData;
       }
-      
     } catch (error) {
-      AxiosToastError(error)
-      return error
+      AxiosToastError(error);
+      return error;
     }
-  }
+  };
 
   const deleteCartItem = async (cartId) => {
     try {
       const response = await Axios({
         ...SummaryApi.deleteCartItem,
-        data : {
-          _id : cartId
-        }
-      })
+        data: {
+          _id: cartId,
+        },
+      });
 
-      const {data : responseData} = response
+      const { data: responseData } = response;
 
       if (responseData.success) {
-        toast.success(responseData.message)
-        fetchCartItem()
+        toast.success(responseData.message);
+        fetchCartItem();
       }
-      
     } catch (error) {
-      AxiosToastError(error)
+      AxiosToastError(error);
     }
-    
-  }
+  };
 
-   useEffect(() => {
+  useEffect(() => {
     const qty = cartItem.reduce((prev, curr) => {
       return prev + curr.quantity;
-    }, 0)
+    }, 0);
 
     setTotalQty(qty);
 
-    const tPrice = cartItem.reduce((prev,curr) => {
-      const priceAfterDiscount = priceWithDiscount(curr?.productId?.price,
-      curr?.productId?.discount)
-    
-      return prev + (priceAfterDiscount * curr.quantity)
-    },0)
+    const tPrice = cartItem.reduce((prev, curr) => {
+      const priceAfterDiscount = priceWithDiscount(
+        curr?.productId?.price,
+        curr?.productId?.discount,
+      );
+
+      return prev + priceAfterDiscount * curr.quantity;
+    }, 0);
     setTotalPrice(tPrice);
 
-    const notDiscountTotalPrice = cartItem.reduce((prev,curr) => {    
-      return prev + (curr?.productId?.price* curr.quantity)
-    },0)
-    setNotDiscountTotalPrice(notDiscountTotalPrice)
-    
+    const notDiscountTotalPrice = cartItem.reduce((prev, curr) => {
+      return prev + curr?.productId?.price * curr.quantity;
+    }, 0);
+    setNotDiscountTotalPrice(notDiscountTotalPrice);
   }, [cartItem]);
 
-  
+  const handleLogOut = () => {
+    localStorage.clear();
+    dispatch(handleAddItemCart([]));
+  };
+
+  const fetchAddress = async () => {
+    try {
+      const response = await Axios({
+        ...SummaryApi.getAddress,
+      });
+
+      const { data: responseData } = response;
+
+      if (responseData.success) {
+        dispatch(handleAddAddress(responseData.data));
+      }
+    } catch (error) {
+      AxiosToastError(error);
+    }
+  };
 
   useEffect(() => {
     if (user?._id) {
-       fetchCartItem()
-    }else{
-       dispatch(handleAddItemCart([]))
+      fetchCartItem();
+      fetchAddress();
+    } else {
+      dispatch(handleAddItemCart([]));
     }
-  },[user])
+  }, [user]);
 
-const handleLogOut = () => {
-    localStorage.clear()
-     dispatch(handleAddItemCart([]))
-  }
-
-
-    return(
-     <GlobalContext.Provider value={{
+  return (
+    <GlobalContext.Provider
+      value={{
         fetchCartItem,
         updateCartItem,
         deleteCartItem,
-        totalPrice, totalQty,
+        fetchAddress,
+        totalPrice,
+        totalQty,
         notDiscountTotalPrice,
-        handleLogOut
-     }}>
-        {children}
-     </GlobalContext.Provider>
-    )
+        handleLogOut,
+      }}
+    >
+      {children}
+    </GlobalContext.Provider>
+  );
+};
 
-}
-
-export default GlobalProvider
+export default GlobalProvider;
