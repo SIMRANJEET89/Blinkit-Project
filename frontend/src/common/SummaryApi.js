@@ -134,6 +134,14 @@ const SummaryApi = {
     getAddress : {
         url : '/api/address/get',
         method : 'get'
+    },
+    updateAddress : {
+        url : '/api/address/update',
+        method : 'put'
+    },
+    disableAddress : {
+        url : '/api/address/delete',
+        method : 'delete'
     }
     
 
