@@ -142,6 +142,10 @@ const SummaryApi = {
     disableAddress : {
         url : '/api/address/delete',
         method : 'delete'
+    },
+    cashOnDelivery : {
+        url : "/api/order/cash-on-delivery",
+        method : "post"
     }
     
 
