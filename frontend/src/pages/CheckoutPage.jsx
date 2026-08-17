@@ -3,14 +3,46 @@ import { useGlobalContext } from "../Provider/GlobalProvider";
 import { DisplayPriceInRupees } from "../utils/DisplayPriceInRupees";
 import AddAddress from "../components/AddAddress";
 import { useSelector } from "react-redux";
+import AxiosToastError from "../utils/AxiosToastError";
+import Axios from "../utils/Axios";
+import SummaryApi from "../common/SummaryApi";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const CheckoutPage = () => {
-  const { notDiscountTotalPrice, totalPrice, totalQty } = useGlobalContext();
+  const { notDiscountTotalPrice, totalPrice, totalQty, fetchCartItem } =
+    useGlobalContext();
   const [openAddress, setOpenAddress] = useState(false);
   const addressList = useSelector((state) => state.addresses.addressList);
   const [selectedAddress, setSelectedAddress] = useState(0);
+  const cartItemList = useSelector((state) => state.cartItem.cart);
+  const navigate = useNavigate();
 
-  console.log("selected add", addressList[selectedAddress]);
+  const handleCashOnDelivery = async () => {
+    try {
+      const response = await Axios({
+        ...SummaryApi.cashOnDelivery,
+        data: {
+          totalQty: totalQty,
+          list_items: cartItemList,
+          addressId: addressList[selectedAddress]?._id,
+          totalAmt: totalPrice,
+          subTotalAmt: totalPrice,
+        },
+      });
+      const { data: responseData } = response;
+
+      if (responseData.success) {
+        toast.success(responseData.message);
+        if (fetchCartItem) {
+          fetchCartItem();
+        }
+        navigate("/success");
+      }
+    } catch (error) {
+      AxiosToastError(error);
+    }
+  };
 
   return (
     <section className="bg-blue-50">
@@ -21,11 +53,14 @@ const CheckoutPage = () => {
           <div className="bg-white p-3 grid gap-4">
             {addressList.map((address, index) => {
               return (
-                <label htmlFor={"address"+index} className={!address.status && `hidden`}>
+                <label
+                  htmlFor={"address" + index}
+                  className={!address.status && `hidden`}
+                >
                   <div className="border rounded p-3 flex gap-3 hover:bg-blue-50">
                     <div className="">
                       <input
-                        id={"address"+index}
+                        id={"address" + index}
                         type="radio"
                         name="address"
                         value={index}
@@ -85,7 +120,10 @@ const CheckoutPage = () => {
             <button className="py-2 px-4 bg-green-600 text-white font-semibold hover:bg-green-700 rounded cursor-pointer">
               Online Payment
             </button>
-            <button className="py-2 px-4 border border-green-600 text-green-600 font-semibold hover:bg-green-600 hover:text-white rounded cursor-pointer">
+            <button
+              onClick={handleCashOnDelivery}
+              className="py-2 px-4 border border-green-600 text-green-600 font-semibold hover:bg-green-600 hover:text-white rounded cursor-pointer"
+            >
               Cash on Delivery
             </button>
           </div>
