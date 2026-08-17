@@ -21,7 +21,7 @@ const CheckoutPage = () => {
           <div className="bg-white p-3 grid gap-4">
             {addressList.map((address, index) => {
               return (
-                <label htmlFor={"address"+index}>
+                <label htmlFor={"address"+index} className={!address.status && `hidden`}>
                   <div className="border rounded p-3 flex gap-3 hover:bg-blue-50">
                     <div className="">
                       <input
