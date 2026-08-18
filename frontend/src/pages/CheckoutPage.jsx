@@ -37,7 +37,12 @@ const CheckoutPage = () => {
         if (fetchCartItem) {
           fetchCartItem();
         }
-        navigate("/success");
+        navigate("/success", {
+        state : {
+          text : "Order"
+        }
+        })
+        
       }
     } catch (error) {
       AxiosToastError(error);
